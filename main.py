@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 load_dotenv()
 bot = telebot.TeleBot(os.getenv('VSRATO_TOKEN'))
 original_photos_path = 'original'
+remake_photos_path = 'remake'
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -67,8 +68,8 @@ def echo(message):
 
 
 @bot.message_handler(content_types=['photo'])
-def recive_photo(message):
-    name = dt.datetime.now().strftime('%Y-%m-%d_%H-%M') + '.jpg'
+def remake_pic(message):
+    name = f'{dt.datetime.now().strftime("%Y-%m-%d_%H-%M")}_{message.from_user.id}.jpg'
     photo = message.photo[-1].file_id
     info = bot.get_file(photo)
     photo_path = info.file_path
@@ -80,6 +81,29 @@ def recive_photo(message):
     save_photo = f'{original_photos_path}/{name}.jpg'
     with open(save_photo, 'wb') as new:
         new.write(dowload_file)
+
+    with open('cool_phrases.txt', 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+        random.shuffle(lines)
+        random_phrase = random.choice(lines).strip()
+
+    try:
+        os.mkdir(remake_photos_path)
+    except FileExistsError:
+        pass
+
+    path = f'{save_photo}'
+    image = Image.open(path)
+    draw = ImageDraw.Draw(image)
+    font_path = 'arial.ttf'
+    font_size = 42
+    font_color = (255, 0, 0)
+    font = ImageFont.truetype(font_path, font_size)
+    draw.text([300, 500], text=random_phrase, font=font, fill=font_color)
+    new_photo = f'new_profile_pic_{message.from_user.username}.jpg'
+    image.save(f'{remake_photos_path}/{new_photo}')
+    new_photo_path = f'{remake_photos_path}/{new_photo}'
+    bot.send_photo(message.chat.id, open(new_photo_path, 'rb'))
 
 
 bot.polling(none_stop=True)
