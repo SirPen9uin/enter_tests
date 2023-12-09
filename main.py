@@ -49,7 +49,7 @@ def start(message):
     path = random_photo_path
     image = Image.open(path)
     draw = ImageDraw.Draw(image)
-    font_path = 'arial.ttf'
+    font_path = 'Arial-BoldItalicMT.ttf'
     font_size = 42
     font_color = (255, 0, 0)
     font = ImageFont.truetype(font_path, font_size)
@@ -95,7 +95,7 @@ def remake_pic(message):
     path = f'{save_photo}'
     image = Image.open(path)
     draw = ImageDraw.Draw(image)
-    font_path = 'arial.ttf'
+    font_path = 'Arial-BoldItalicMT.ttf'
     font_size = 42
     font_color = (255, 0, 0)
     font = ImageFont.truetype(font_path, font_size)
